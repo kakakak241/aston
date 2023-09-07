@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: Aston Bank API
+  version: 1.0.0
+  x-domain: aston
+
+servers:
+  - url: http://localhost/api/aston/v1
+    description: Локальная разработка
+
+tags:
+  - name: User
+    description: Пользователи
+    x-uuid: 4b296892-80fa-484e-a874-ae86d2510389
+  - name: Account
+    description: Счета
+    x-uuid: 29e8fe1a-360a-4641-b1f4-69877e0279d4
+
+paths:
+  /users:
+    post:
+      tags:
+        - User
+      summary: Создать пользователя
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'dto.yaml#/components/schemas/UserCreateDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'dto.yaml#/components/schemas/UserViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+    get:
+      tags:
+        - User
+      summary: Получить список всех пользователей
+      operationId: getUsers
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'dto.yaml#/components/schemas/UserViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+  /users/{userUuid}:
+    parameters:
+      - name: userUuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      tags:
+        - User
+      summary: Получить пользователя по UUID
+      operationId: getUser
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'dto.yaml#/components/schemas/UserViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+    put:
+      tags:
+        - User
+      summary: Обновить пользователя
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'dto.yaml#/components/schemas/UserUpdateDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'dto.yaml#/components/schemas/UserViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+    delete:
+      tags:
+        - User
+      summary: Удалить пользователя
+      operationId: deleteUser
+      responses:
+        200:
+          description: OK
+
+  /users/{userUuid}/accounts:
+    parameters:
+      - name: userUuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    post:
+      tags:
+        - Account
+      summary: Создать счет для пользователя
+      operationId: createUserAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'dto.yaml#/components/schemas/AccountCreateDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'dto.yaml#/components/schemas/AccountViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+    get:
+      tags:
+        - Account
+      summary: Получить все счета пользователя
+      operationId: getUserAccounts
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'dto.yaml#/components/schemas/AccountViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+  /users/{userUuid}/accounts/{accountUuid}:
+    parameters:
+      - name: userUuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: accountUuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    put:
+      tags:
+        - Account
+      summary: Обновить счёт
+      operationId: updateAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'dto.yaml#/components/schemas/AccountUpdateDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'dto.yaml#/components/schemas/AccountViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+    get:
+      tags:
+        - Account
+      summary: Получить счет пользователя по UUID
+      operationId: getUserAccountByUuid
+
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'dto.yaml#/components/schemas/AccountViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+    delete:
+      tags:
+        - Account
+      summary: Удалить счет пользователя
+      operationId: deleteUserAccount
+      responses:
+        200:
+          description: OK
+
+  /accounts:
+    get:
+      tags:
+        - Account
+      summary: Получить все счета
+      operationId: getAllAccounts
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'dto.yaml#/components/schemas/AccountViewDto'
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+
+  /accounts/transactions/withdraw:
+    post:
+      tags:
+        - Account
+      summary: Снять деньги
+      operationId: withdrawMoney
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'dto.yaml#/components/schemas/TransactionWithdrawDto'
+      responses:
+        200:
+          description: OK
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+  /accounts/transactions/deposit:
+    post:
+      tags:
+        - Account
+      summary: Пополнить счет
+      operationId: depositMoney
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'dto.yaml#/components/schemas/TransactionDepositDto'
+      responses:
+        200:
+          description: OK
+        default:
+          $ref: "dto.yaml#/components/responses/Error"
+
+  /accounts/transactions/transfer:
+    post:
+      tags:
+        - Account
+      summary: Перевести деньги на другой счет
+      operationId: transferMoney
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'dto.yaml#/components/schemas/TransactionTransferDto'
+      responses:
+        200:
+          description: OK
+        default:
+          $ref: "dto.yaml#/components/responses/Error"

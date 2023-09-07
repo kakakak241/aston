@@ -1,0 +1,9 @@
+openapi:
+  astonBank:
+    base-path: "/api/aston/v1"
+
+common.root.base-path: "/api/aston"
+
+server:
+  port: 8080
+  forward-headers-strategy: native

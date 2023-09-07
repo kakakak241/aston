@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: Aston Bank Dto
+  version: 1.0.0
+
+paths:
+  { }
+
+components:
+  schemas:
+
+    UserBaseDto:
+      type: object
+      properties:
+        name:
+          description: Имя пользователя
+          type: string
+
+    UserCreateDto:
+      description: DTO для создания Пользователя
+      type: object
+      required:
+        - name
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+
+    UserUpdateDto:
+      description: DTO для обновления Пользователя
+      type: object
+      required:
+        - name
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+
+    UserViewDto:
+      description: Представление Пользователя
+      type: object
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          description: Глобальный идентификатор
+          type: string
+          format: uuid
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/EntityViewDto'
+      allOf:
+        - $ref: '#/components/schemas/UserBaseDto'
+
+    AccountBaseDto:
+      type: object
+      properties:
+        name:
+          description: Имя пользователя
+          type: string
+        pin:
+          description: ПИН
+          type: string
+
+    AccountCreateDto:
+      description: DTO для создания счета
+      type: object
+      required:
+        - pin
+      allOf:
+        - $ref: '#/components/schemas/AccountBaseDto'
+
+    AccountUpdateDto:
+      description: DTO для обновления счета
+      type: object
+      required:
+        - name
+      allOf:
+        - $ref: '#/components/schemas/AccountBaseDto'
+
+    AccountViewDto:
+      description: Представление счета
+      type: object
+      required:
+        - uuid
+        - name
+        - balance
+      properties:
+        uuid:
+          description: Глобальный идентификатор
+          type: string
+          format: uuid
+        user:
+          $ref: '#/components/schemas/EntityViewDto'
+        balance:
+          description: Баланс счета
+          type: number
+          format: float
+        number:
+          description: Номер счета
+          type: integer
+
+    TransactionBaseDto:
+      type: object
+      required:
+        - userUuid
+        - accountUuid
+        - amount
+      properties:
+        userUuid:
+          description: Глобальный идентификатор пользователя
+          type: string
+          format: uuid
+        accountUuid:
+          description: Глобальный идентификатор счета
+          type: string
+          format: uuid
+        amount:
+          description: Сумма транзакции
+          type: number
+          format: double
+
+    TransactionWithdrawDto:
+      description: DTO для снятия денег
+      type: object
+      required:
+        - pin
+      properties:
+        pin:
+          description: ПИН-код
+          type: string
+      allOf:
+        - $ref: '#/components/schemas/TransactionBaseDto'
+
+    TransactionDepositDto:
+      description: DTO для пополнения счета
+      allOf:
+        - $ref: '#/components/schemas/TransactionBaseDto'
+
+    TransactionTransferDto:
+      description: DTO для перевода денег
+      required:
+        - pin
+        - accountTransferUuid
+      properties:
+        accountTransferUuid:
+          description: Глобальный идентификатор счета получателя
+          type: string
+          format: uuid
+        pin:
+          description: ПИН-код
+          type: string
+      allOf:
+        - $ref: '#/components/schemas/TransactionBaseDto'
+
+    EntityViewDto:
+      type: object
+      description: Общее отображение сущности
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          description: Глобальный идентификатор
+          type: string
+          format: uuid
+        name:
+          description: Значение
+          type: string
+          example: "Example name"
+
+    StringStringMap:
+      description: >
+        Описание Map
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        email: "Значение для email"
+        name: "Значение для name"
+
+    BackendError:
+      description: Стандартный ответ при негативном сценарии
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          description: Код ошибки
+          type: string
+          example: "404"
+        message:
+          description: Сообщение
+          type: string
+          example: "NOT_FOUND"
+        description:
+          description: Доп информация
+          example: "Модуль c uuid: 6469185a-9039-4e7d-a226-5a65c9f9489e не найден"
+          type: string
+        details:
+          $ref: "#/components/schemas/StringStringMap"
+
+  responses:
+    Error:
+      description: Ошибка
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BackendError"
