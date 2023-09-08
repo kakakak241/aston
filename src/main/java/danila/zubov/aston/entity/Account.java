@@ -21,7 +21,7 @@ public class Account {
 
   private Integer number;
 
-  private Double balance;
+  private Double balance = 0.0;
 
   private String pin;
 

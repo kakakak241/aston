@@ -41,7 +41,11 @@ public class UserApiITest {
     assertCommonResponseChecks(response);
 
     var userViewDto = response.getBody();
-    assertUserViewChecks(userViewDto, createDto.getName());
+
+    Assertions.assertAll(
+        () -> Assertions.assertNotNull(userViewDto.getUuid()),
+        () -> Assertions.assertEquals(createDto.getName(), userViewDto.getName())
+    );
 
     deleteUser(userViewDto.getUuid());
   }
@@ -54,7 +58,12 @@ public class UserApiITest {
 
     var getResponse = restTemplate.getForEntity(getObjectUri(postResponse.getBody().getUuid()), UserViewDto.class);
     assertCommonResponseChecks(getResponse);
-    assertUserViewChecks(getResponse.getBody(), postResponse.getBody().getName());
+
+    // Внесены проверки напрямую
+    Assertions.assertAll(
+        () -> Assertions.assertNotNull(getResponse.getBody().getUuid()),
+        () -> Assertions.assertEquals(postResponse.getBody().getName(), getResponse.getBody().getName())
+    );
 
     deleteUser(postResponse.getBody().getUuid());
   }
@@ -108,17 +117,8 @@ public class UserApiITest {
 
   private void assertCommonArrayResponseChecks(ResponseEntity<UserViewDto[]> response, int expectedLength) {
     Assertions.assertAll(
-        () -> Assertions.assertNotNull(response),
-        () -> Assertions.assertEquals(HttpStatus.OK, response.getStatusCode()),
-        () -> Assertions.assertNotNull(response.getBody()),
+        () -> assertCommonResponseChecks(response),
         () -> Assertions.assertEquals(expectedLength, response.getBody().length)
-    );
-  }
-
-  private void assertUserViewChecks(UserViewDto userView, String expectedName) {
-    Assertions.assertAll(
-        () -> Assertions.assertNotNull(userView.getUuid()),
-        () -> Assertions.assertEquals(expectedName, userView.getName())
     );
   }
 
@@ -131,7 +131,7 @@ public class UserApiITest {
   }
 
   private URI getObjectsUri() {
-    return UriComponentsBuilder.fromHttpUrl(getUrl()).pathSegment(USERS_ENDPOINT).build().encode()
+    return UriComponentsBuilder.fromHttpUrl(getUrl()).pathSegment(USERS_ENDPOINT).build()
         .toUri();
   }
 

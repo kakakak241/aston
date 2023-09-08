@@ -4,6 +4,7 @@ import danila.zubov.aston.dto.UserCreateDto;
 import danila.zubov.aston.dto.UserUpdateDto;
 import danila.zubov.aston.dto.UserViewDto;
 import danila.zubov.aston.mapper.UserMapper;
+import danila.zubov.aston.repository.AccountRepository;
 import danila.zubov.aston.repository.UserRepository;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,8 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository repository;
 
+  private final AccountRepository accountRepository;
+
   private final UserMapper mapper;
 
   @Override
@@ -26,6 +29,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public void delete(UUID uuid) {
     var user = repository.getUserByUuid(uuid);
+    user.getAccounts().forEach(accountRepository::delete);
     repository.delete(user);
   }
 

@@ -1,5 +1,6 @@
 package danila.zubov.aston.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
@@ -21,6 +22,10 @@ public class User {
   public User(UUID uuid, String name) {
     this.uuid = uuid;
     this.name = name;
+  }
+
+  public List<Account> getAccounts() {
+    return this.accounts == null ? new ArrayList<>() : this.accounts;
   }
 
 }

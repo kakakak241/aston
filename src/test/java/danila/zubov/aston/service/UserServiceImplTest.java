@@ -5,6 +5,7 @@ import danila.zubov.aston.dto.UserUpdateDto;
 import danila.zubov.aston.dto.UserViewDto;
 import danila.zubov.aston.entity.User;
 import danila.zubov.aston.mapper.UserMapper;
+import danila.zubov.aston.repository.AccountRepository;
 import danila.zubov.aston.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,9 @@ class UserServiceImplTest {
 
   @Mock
   private UserRepository userRepository;
+
+  @Mock
+  private AccountRepository accountRepository;
 
   @Mock
   private UserMapper userMapper;
