@@ -35,8 +35,15 @@ public class UserRepositoryImpl implements UserRepository {
   @Override
   public User save(User user) {
     var existingUser = findUserByUuid(user.getUuid());
-    existingUser.ifPresent(users::remove);
-    user.setUuid(UUID.randomUUID());
+
+    UUID uuid = UUID.randomUUID();
+
+    if (existingUser.isPresent()) {
+      uuid = existingUser.get().getUuid();
+      users.remove(existingUser.get());
+    }
+
+    user.setUuid(uuid);
     users.add(user);
     return user;
   }
