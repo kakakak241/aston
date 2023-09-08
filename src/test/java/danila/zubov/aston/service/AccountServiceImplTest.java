@@ -16,6 +16,7 @@ import danila.zubov.aston.repository.UserRepository;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -63,10 +64,14 @@ class AccountServiceImplTest {
   void shouldCreateAccountSuccessfully() {
     AccountCreateDto dto = new AccountCreateDto("1234");
     dto.setName("Simple");
+    account.setNumber(10000000);
+    user.setAccounts(new ArrayList<>());
+    var viewDto = new AccountViewDto(account.getUuid(), 0.0);
+
     when(userRepository.getUserByUuid(userUuid)).thenReturn(user);
     when(accountMapper.toEntity(dto)).thenReturn(account);
     when(accountRepository.save(account)).thenReturn(account);
-    when(accountRepository.save(account)).thenReturn(account);
+    when(accountMapper.toViewDto(account)).thenReturn(viewDto);
 
     AccountViewDto result = accountService.create(userUuid, dto);
 
@@ -76,7 +81,9 @@ class AccountServiceImplTest {
 
   @Test
   void shouldDeleteAccountSuccessfully() {
+    user.setAccounts(new ArrayList<>());
     user.getAccounts().add(account);
+
 
     when(userRepository.getUserByUuid(userUuid)).thenReturn(user);
     when(accountRepository.getAccountByUuid(accountUuid)).thenReturn(account);
@@ -98,7 +105,10 @@ class AccountServiceImplTest {
 
   @Test
   void shouldGetOneAccountSuccessfully() {
+    var viewDto = new AccountViewDto(account.getUuid(), 0.0);
+
     when(accountRepository.getAccountByUuid(accountUuid)).thenReturn(account);
+    when(accountMapper.toViewDto(account)).thenReturn(viewDto);
 
     AccountViewDto result = accountService.getOne(accountUuid);
 
@@ -107,8 +117,12 @@ class AccountServiceImplTest {
 
   @Test
   void shouldUpdateAccountSuccessfully() {
+    user.setAccounts(new ArrayList<>());
     AccountUpdateDto dto = new AccountUpdateDto("testUpdate");
+    var viewDto = new AccountViewDto(account.getUuid(), 0.0);
+
     when(accountRepository.getAccountByUuid(accountUuid)).thenReturn(account);
+    when(accountMapper.toViewDto(account)).thenReturn(viewDto);
 
     AccountViewDto result = accountService.update(accountUuid, dto);
 

@@ -93,7 +93,7 @@ components:
         balance:
           description: Баланс счета
           type: number
-          format: float
+          format: double
         number:
           description: Номер счета
           type: integer

@@ -4,19 +4,23 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
-  @NonNull
   @EqualsAndHashCode.Include
   private UUID uuid;
 
-  @NonNull
   private String name;
 
   private List<Account> accounts;
+
+  public User(UUID uuid, String name) {
+    this.uuid = uuid;
+    this.name = name;
+  }
 
 }
